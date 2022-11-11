@@ -7051,10 +7051,29 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Cube2x2v2$Model = F8(
-	function (conf, vertices, prev, state, angle, start, hands, prevHands) {
-		return {angle: angle, conf: conf, hands: hands, prev: prev, prevHands: prevHands, start: start, state: state, vertices: vertices};
-	});
+var $author$project$Cube2x2v2$Model = function (conf) {
+	return function (vertices) {
+		return function (prev) {
+			return function (state) {
+				return function (angle) {
+					return function (start) {
+						return function (hands) {
+							return function (prevHands) {
+								return function (onHomePosition) {
+									return function (elapsed) {
+										return function (oyaMoved) {
+											return {angle: angle, conf: conf, elapsed: elapsed, hands: hands, onHomePosition: onHomePosition, oyaMoved: oyaMoved, prev: prev, prevHands: prevHands, start: start, state: state, vertices: vertices};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var $author$project$Cube2x2v2$Waiting = {$: 'Waiting'};
 var $author$project$Cube2x2v2$Panel = F3(
 	function (id, color, position) {
@@ -7280,7 +7299,7 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Cube2x2v2$init = function (_v0) {
 	return _Utils_Tuple2(
-		A8($author$project$Cube2x2v2$Model, $author$project$Cube2x2v2$initPanels, $author$project$Cube2x2v2$initialVertices, $author$project$Cube2x2v2$initialVertices, $author$project$Cube2x2v2$Waiting, 0, $elm$core$Maybe$Nothing, _List_Nil, _List_Nil),
+		$author$project$Cube2x2v2$Model($author$project$Cube2x2v2$initPanels)($author$project$Cube2x2v2$initialVertices)($author$project$Cube2x2v2$initialVertices)($author$project$Cube2x2v2$Waiting)(0)($elm$core$Maybe$Nothing)(_List_Nil)(_List_Nil)(false)(0)(false),
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Cube2x2v2$Elapsed = function (a) {
@@ -7473,17 +7492,22 @@ var $author$project$Cube2x2v2$subscriptions = function (model) {
 				$author$project$Cube2x2v2$handsReceiver($author$project$Cube2x2v2$Hands)
 			]));
 };
+var $author$project$Cube2x2v2$FrontF = function (a) {
+	return {$: 'FrontF', a: a};
+};
+var $author$project$Cube2x2v2$LeftF = function (a) {
+	return {$: 'LeftF', a: a};
+};
 var $author$project$Cube2x2v2$MovingFront = {$: 'MovingFront'};
 var $author$project$Cube2x2v2$MovingLeft = {$: 'MovingLeft'};
 var $author$project$Cube2x2v2$MovingTop = {$: 'MovingTop'};
-var $elm$core$Debug$log = _Debug_log;
-var $author$project$Cube2x2v2$onHomePosition = F2(
-	function (hands, prevHands) {
-		return true;
+var $elm$core$Basics$pow = _Basics_pow;
+var $elm$core$Basics$sqrt = _Basics_sqrt;
+var $author$project$Cube2x2v2$dist3d = F2(
+	function (p, q) {
+		return $elm$core$Basics$sqrt(
+			(A2($elm$core$Basics$pow, p.x - q.x, 2) + A2($elm$core$Basics$pow, p.y - q.y, 2)) + A2($elm$core$Basics$pow, p.z - q.z, 2));
 	});
-var $author$project$SymGrp$degree = function (s) {
-	return $elm$core$List$length(s);
-};
 var $elm$core$List$drop = F2(
 	function (n, list) {
 		drop:
@@ -7505,6 +7529,7 @@ var $elm$core$List$drop = F2(
 			}
 		}
 	});
+var $elm$core$Basics$acos = _Basics_acos;
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -7513,6 +7538,14 @@ var $elm$core$List$head = function (list) {
 	} else {
 		return $elm$core$Maybe$Nothing;
 	}
+};
+var $author$project$Cube2x2v2$innerProd = F2(
+	function (v, w) {
+		return ((v.x * w.x) + (v.y * w.y)) + (v.z * w.z);
+	});
+var $author$project$Cube2x2v2$norm = function (vec) {
+	return $elm$core$Basics$sqrt(
+		(A2($elm$core$Basics$pow, vec.x, 2) + A2($elm$core$Basics$pow, vec.y, 2)) + A2($elm$core$Basics$pow, vec.z, 2));
 };
 var $elm$core$Maybe$withDefault = F2(
 	function (_default, maybe) {
@@ -7523,6 +7556,59 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
+var $author$project$Cube2x2v2$fingerAngle = function (finger) {
+	var third = A2(
+		$elm$core$Maybe$withDefault,
+		{x: 0, y: 0, z: 0},
+		$elm$core$List$head(
+			A2($elm$core$List$drop, 2, finger)));
+	var second = A2(
+		$elm$core$Maybe$withDefault,
+		{x: 0, y: 0, z: 0},
+		$elm$core$List$head(
+			A2($elm$core$List$drop, 1, finger)));
+	var fourth = A2(
+		$elm$core$Maybe$withDefault,
+		{x: 0, y: 0, z: 0},
+		$elm$core$List$head(
+			A2($elm$core$List$drop, 3, finger)));
+	var first = A2(
+		$elm$core$Maybe$withDefault,
+		{x: 0, y: 0, z: 0},
+		$elm$core$List$head(finger));
+	var top = {x: first.x - second.x, y: first.y - second.y, z: first.z - second.z};
+	var bot = {x: third.x - fourth.x, y: third.y - fourth.y, z: third.z - fourth.z};
+	return $elm$core$Basics$acos(
+		A2($author$project$Cube2x2v2$innerProd, top, bot) / ($author$project$Cube2x2v2$norm(top) * $author$project$Cube2x2v2$norm(bot)));
+};
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$List$maximum = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(
+			A3($elm$core$List$foldl, $elm$core$Basics$max, x, xs));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $elm$core$List$minimum = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(
+			A3($elm$core$List$foldl, $elm$core$Basics$min, x, xs));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$SymGrp$degree = function (s) {
+	return $elm$core$List$length(s);
+};
 var $author$project$SymGrp$act = F2(
 	function (p, i) {
 		return (_Utils_cmp(
@@ -7870,7 +7956,21 @@ var $author$project$Cube2x2v2$update = F2(
 						model,
 						{state: $author$project$Cube2x2v2$MovingFront}),
 					$elm$core$Platform$Cmd$none);
+			case 'FrontF':
+				var str = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: $author$project$Cube2x2v2$MovingFront}),
+					$elm$core$Platform$Cmd$none);
 			case 'Left':
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{state: $author$project$Cube2x2v2$MovingLeft}),
+					$elm$core$Platform$Cmd$none);
+			case 'LeftF':
+				var str = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -7990,7 +8090,6 @@ var $author$project$Cube2x2v2$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'Hands':
 				var handsData = msg.a;
-				var dummy = A2($elm$core$Debug$log, 'Hands', handsData);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -7998,12 +8097,126 @@ var $author$project$Cube2x2v2$update = F2(
 					$elm$core$Platform$Cmd$none);
 			default:
 				var t = msg.a;
-				var homePosition = A2($author$project$Cube2x2v2$onHomePosition, model.hands, model.prevHands);
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{prevHands: model.hands}),
-					$elm$core$Platform$Cmd$none);
+				if (model.elapsed < 3) {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{elapsed: model.elapsed + 1, oyaMoved: false}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var getPosition = function (idx) {
+						return A2(
+							$elm$core$Maybe$withDefault,
+							{x: 0, y: 0, z: 0},
+							$elm$core$List$head(
+								A2($elm$core$List$drop, idx, model.hands)));
+					};
+					var leftMove = _Utils_cmp(
+						A2(
+							$author$project$Cube2x2v2$dist3d,
+							getPosition(4),
+							getPosition(8)),
+						A2(
+							$author$project$Cube2x2v2$dist3d,
+							getPosition(7),
+							getPosition(8))) < 0;
+					var frontMove = _Utils_cmp(
+						A2(
+							$author$project$Cube2x2v2$dist3d,
+							getPosition(21 + 4),
+							getPosition(21 + 8)),
+						A2(
+							$author$project$Cube2x2v2$dist3d,
+							getPosition(21 + 7),
+							getPosition(21 + 8))) < 0;
+					var finger = function (idx) {
+						return A2(
+							$elm$core$List$take,
+							4,
+							(idx < 5) ? A2($elm$core$List$drop, 1 + (idx * 4), model.hands) : A2($elm$core$List$drop, 2 + (idx * 4), model.hands));
+					};
+					var hitoAngles = A2(
+						$elm$core$List$map,
+						$author$project$Cube2x2v2$fingerAngle,
+						A2(
+							$elm$core$List$map,
+							function (fidx) {
+								return finger(fidx);
+							},
+							_List_fromArray(
+								[1, 6])));
+					var maxHitoAngle = A2(
+						$elm$core$Maybe$withDefault,
+						0,
+						$elm$core$List$maximum(hitoAngles));
+					var oyaAngles = A2(
+						$elm$core$List$map,
+						$author$project$Cube2x2v2$fingerAngle,
+						A2(
+							$elm$core$List$map,
+							function (fidx) {
+								return finger(fidx);
+							},
+							_List_fromArray(
+								[0, 5])));
+					var maxOyaAngle = A2(
+						$elm$core$Debug$log,
+						'oya angle',
+						A2(
+							$elm$core$Maybe$withDefault,
+							0,
+							$elm$core$List$maximum(oyaAngles)));
+					var angles = A2(
+						$elm$core$List$map,
+						$author$project$Cube2x2v2$fingerAngle,
+						A2(
+							$elm$core$List$map,
+							function (fidx) {
+								return finger(fidx);
+							},
+							_List_fromArray(
+								[2, 3, 4, 7, 8, 9])));
+					var minAngle = A2(
+						$elm$core$Maybe$withDefault,
+						0,
+						$elm$core$List$minimum(angles));
+					var onHome = _Utils_cmp(minAngle, $elm$core$Basics$pi / 2) > 0;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								elapsed: 0,
+								onHomePosition: onHome,
+								oyaMoved: (maxOyaAngle > 1.7) && (_Utils_cmp(minAngle, $elm$core$Basics$pi / 2) > 0),
+								prevHands: model.hands,
+								vertices: onHome ? ((maxOyaAngle > 1.7) ? A2(
+									$elm$core$List$map,
+									function (point) {
+										return A3(
+											$ianmackenzie$elm_geometry$Point3d$rotateAround,
+											$ianmackenzie$elm_geometry$Axis3d$z,
+											$ianmackenzie$elm_units$Angle$degrees(30),
+											point);
+									},
+									model.vertices) : ((maxHitoAngle > 2) ? A2(
+									$elm$core$List$map,
+									function (point) {
+										return A3(
+											$ianmackenzie$elm_geometry$Point3d$rotateAround,
+											$ianmackenzie$elm_geometry$Axis3d$y,
+											$ianmackenzie$elm_units$Angle$degrees(30),
+											point);
+									},
+									model.vertices) : model.vertices)) : model.vertices
+							}),
+						(onHome && leftMove) ? A2(
+							$elm$core$Task$perform,
+							$author$project$Cube2x2v2$LeftF,
+							$elm$core$Task$succeed('left')) : ((onHome && frontMove) ? A2(
+							$elm$core$Task$perform,
+							$author$project$Cube2x2v2$FrontF,
+							$elm$core$Task$succeed('front')) : $elm$core$Platform$Cmd$none));
+				}
 		}
 	});
 var $author$project$Cube2x2v2$Front = {$: 'Front'};
@@ -8034,7 +8247,6 @@ var $elm$core$List$filter = F2(
 var $elm$core$Basics$abs = function (n) {
 	return (n < 0) ? (-n) : n;
 };
-var $elm$core$Basics$sqrt = _Basics_sqrt;
 var $ianmackenzie$elm_geometry$Direction3d$from = F2(
 	function (_v0, _v1) {
 		var p1 = _v0.a;
@@ -8467,7 +8679,6 @@ var $elm$core$Basics$clamp = F3(
 var $ianmackenzie$elm_3d_scene$Scene3d$Types$LinearRgb = function (a) {
 	return {$: 'LinearRgb', a: a};
 };
-var $elm$core$Basics$pow = _Basics_pow;
 var $ianmackenzie$elm_3d_scene$Scene3d$ColorConversions$inverseGamma = function (u) {
 	return A3(
 		$elm$core$Basics$clamp,
@@ -8615,10 +8826,6 @@ var $elm_explorations$webgl$WebGL$entityWith = _WebGL_entity;
 var $ianmackenzie$elm_geometry$Geometry$Types$BoundingBox3d = function (a) {
 	return {$: 'BoundingBox3d', a: a};
 };
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
 var $ianmackenzie$elm_geometry$BoundingBox3d$hullHelp = F7(
 	function (currentMinX, currentMaxX, currentMinY, currentMaxY, currentMinZ, currentMaxZ, points) {
 		hullHelp:
@@ -11183,7 +11390,7 @@ var $author$project$Cube2x2v2$view = function (model) {
 			verticalFieldOfView: $ianmackenzie$elm_units$Angle$degrees(30),
 			viewpoint: $ianmackenzie$elm_3d_camera$Viewpoint3d$lookAt(
 				{
-					eyePoint: A3($ianmackenzie$elm_geometry$Point3d$meters, 5, 0, 5),
+					eyePoint: A3($ianmackenzie$elm_geometry$Point3d$meters, 8, 0, 0),
 					focalPoint: $ianmackenzie$elm_geometry$Point3d$origin,
 					upDirection: $ianmackenzie$elm_geometry$Direction3d$positiveZ
 				})
@@ -11289,7 +11496,11 @@ var $author$project$Cube2x2v2$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('T')
-							]))
+							])),
+						$elm$html$Html$text(
+						model.onHomePosition ? 'home' : ''),
+						$elm$html$Html$text(
+						model.oyaMoved ? '動いた' : '')
 					])),
 				A2(
 				$elm$html$Html$div,
